@@ -54,3 +54,6 @@ st.dataframe(
     ][["religion1", "religion2", "religion3"]],
     width=500,
 )
+
+if (st.session_state["dice1"] != None) & (st.session_state["dice2"] != None) & (st.session_state["dice3"] != None):
+    st.image("map.png")
