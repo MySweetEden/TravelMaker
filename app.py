@@ -1,10 +1,16 @@
 import random
 
+import geopandas as gpd
 import pandas as pd
 import streamlit as st
+from shapely import wkt
+from streamlit_folium import st_folium
 
 st.title("Travel Maker")
-df = pd.read_csv("table.csv")
+df = pd.read_csv("gdf.csv")
+df["geometry"] = df["geometry"].apply(wkt.loads)
+gdf = gpd.GeoDataFrame(df, geometry=df["geometry"], crs="EPSG:4326")
+
 
 col1, col2, col3 = st.columns(3)
 
@@ -37,23 +43,16 @@ with col3:
         st.session_state["dice3"] = random.randint(1, 6)
     st.write(f"{st.session_state['dice3']}")
 
-st.dataframe(
-    df[
-        (
-            (df["area1"] == st.session_state["dice1"])
-            | (st.session_state["dice1"] == None)
-        )
-        & (
-            (df["area2"] == st.session_state["dice2"])
-            | (st.session_state["dice2"] == None)
-        )
-        & (
-            (df["area3"] == st.session_state["dice3"])
-            | (st.session_state["dice3"] == None)
-        )
-    ][["religion1", "religion2", "religion3"]],
-    width=500,
-)
-
-if (st.session_state["dice1"] != None) & (st.session_state["dice2"] != None) & (st.session_state["dice3"] != None):
-    st.image("map.png")
+filtered_gdf = gdf[
+    ((gdf["area1"] == st.session_state["dice1"]) | (st.session_state["dice1"] == None))
+    & (
+        (gdf["area2"] == st.session_state["dice2"])
+        | (st.session_state["dice2"] == None)
+    )
+    & (
+        (gdf["area3"] == st.session_state["dice3"])
+        | (st.session_state["dice3"] == None)
+    )
+]
+st_folium(filtered_gdf.explore(), use_container_width=True, height=720)
+st.dataframe(filtered_gdf["religion_name"])
