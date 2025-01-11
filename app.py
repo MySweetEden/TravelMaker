@@ -33,13 +33,21 @@ with col1:
 
 # Dice 2 Button
 with col2:
-    if st.button("Roll Dice 2", disabled=st.session_state["dice2"] is not None):
+    if st.button(
+        "Roll Dice 2",
+        disabled=st.session_state["dice2"] is not None
+        or st.session_state["dice1"] is None,
+    ):
         st.session_state["dice2"] = random.randint(1, 6)
     st.write(f"{st.session_state['dice2']}")
 
 # Dice 3 Button
 with col3:
-    if st.button("Roll Dice 3", disabled=st.session_state["dice3"] is not None):
+    if st.button(
+        "Roll Dice 3",
+        disabled=st.session_state["dice3"] is not None
+        or st.session_state["dice2"] is None,
+    ):
         st.session_state["dice3"] = random.randint(1, 6)
     st.write(f"{st.session_state['dice3']}")
 
