@@ -23,7 +23,7 @@ if "dice3" not in st.session_state:
     st.session_state["dice3"] = None
 
 # Layout with three columns
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 # Dice 1 Button
 with col1:
@@ -42,6 +42,19 @@ with col3:
     if st.button("Roll Dice 3", disabled=st.session_state["dice3"] is not None):
         st.session_state["dice3"] = random.randint(1, 6)
     st.write(f"{st.session_state['dice3']}")
+
+with col4:
+    if st.button(
+        "Reset",
+        disabled=not (
+            (st.session_state["dice1"] is not None)
+            & (st.session_state["dice2"] is not None)
+            & (st.session_state["dice3"] is not None)
+        ),
+    ):
+        st.session_state["dice1"] = None
+        st.session_state["dice2"] = None
+        st.session_state["dice3"] = None
 
 filtered_gdf = gdf[
     ((gdf["area1"] == st.session_state["dice1"]) | (st.session_state["dice1"] == None))
